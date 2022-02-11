@@ -387,6 +387,7 @@ function initOptimisthubGatewayClass()
             } 
   
             $payOrder           = $this->optimisthubMoka->initializePayment($orderDetails);
+            dd($payOrder);
             $callbackUrl        = data_get($payOrder, 'Data.Url');
             $callbackHash       = data_get($payOrder, 'Data.CodeForHash');
             $callbackResult     = data_get($payOrder, 'ResultCode');
@@ -406,7 +407,6 @@ function initOptimisthubGatewayClass()
                 ]
             );
 
-            
             $recordParams = 
             [
                 'id_cart'       => data_get($orderDetails,'orderId'),
@@ -605,7 +605,7 @@ function initOptimisthubGatewayClass()
                 ],
 
                 // TODO : Basket Product Details
-                //'BasketProduct'         => self::formatBaksetProducts($order), 
+                'BasketProduct'         => self::formatBaksetProducts($order), 
             ]; 
              
             return $orderData;
@@ -874,6 +874,20 @@ function initOptimisthubGatewayClass()
         }
 
         /**
+         * Get Moka Product Id
+         *
+         * @param [type] $productId
+         * @return void
+         */
+        private function getMokaProductId($productId)
+        {
+            global $wpdb;
+            $tableName = $wpdb->prefix . 'moka_products';
+            $product = $wpdb->get_row("SELECT moka_product_id FROM $tableName WHERE product_id = '$productId'");
+            return $product ? data_get($product, 'moka_product_id') : 0;
+        }
+
+        /**
          * Generate Default Order Prefix
          *
          * @return void
@@ -902,15 +916,29 @@ function initOptimisthubGatewayClass()
                     $itemQuantity = $item->get_quantity();
                     $itemTotal     = $item->get_total(); 
                     $output[] = [
-                        //'ProductId' => $product->get_id(),
-                        'ProductCode' => $productName,
-                        'UnitPrice' => $itemTotal,
+                        'ProductId' => $product->get_id(),
+                        'ProductCode' => $product->get_id(),
+                        'ProductName' => $productName,
+                        'UnitPrice' => $itemTotal/$itemQuantity,
                         'Quantity' => $itemQuantity,
                     ];
                 } 
             }
 
-            return $output;
+            $setOrGetProduct = $this->optimisthubMoka->setOrGetProduct($output); 
+ 
+            $return = [];
+            foreach($output as $perItem)
+            {
+                $return[] = [
+                    'ProductId' => self::getMokaProductId(data_get($perItem, 'ProductId')),
+                    'ProductCode' => data_get($perItem, 'ProductCode'), 
+                    'UnitPrice' => data_get($perItem, 'UnitPrice'),
+                    'Quantity' => data_get($perItem, 'Quantity'),
+                ];
+            } 
+ 
+            return $return;
         }
 
         /**

@@ -136,6 +136,7 @@ class MokaPayment
         return $response; 
     }
 
+
     /**
      * Fetch Installemnts From Server
      *
@@ -298,6 +299,46 @@ class MokaPayment
     }
 
     /**
+     * Set Or Get product 
+     *
+     * @param [type] $param
+     * @return void
+     */
+    public function setOrGetProduct($param)  
+    {
+         
+        $productIds = [];
+        $output = [];
+        $products = self::getProductList();
+        
+        if($products)
+        {
+            $productIds = array_keys($products);
+        } 
+
+        foreach ($param as $perProduct)
+        {
+      
+            if(!in_array(data_get($perProduct, 'ProductId'), $productIds))
+            { 
+                $saveProduct = self::setProduct([
+                    'ProductName' => data_get($perProduct, 'ProductName'),
+                    'ProductCode' => mb_substr(data_get($perProduct, 'ProductCode'),0,100),  
+                    'UnitPrice' => data_get($perProduct, 'UnitPrice'),  
+                ]); 
+                self::saveProductToDatabase([
+                    'product_id' => data_get($perProduct, 'ProductId'),
+                    'moka_product_id' => data_get($saveProduct, 'DealerProductId'),  
+                    'created_at' => date('Y-m-d H:i:s'),
+                ]);  
+            }  
+ 
+        }   
+        
+ 
+    }
+
+    /**
      * Generate Moka Key Hash
      *
      * @param [array] $params
@@ -420,4 +461,116 @@ class MokaPayment
         return $output;
     }
 
+
+    /**
+     * Set Product
+     *
+     * @return void
+     */
+    private function setProduct($params)
+    {
+        global $mokaKey;
+
+        $postParams = [
+            'DealerSaleAuthentication' => 
+            [
+                'DealerCode'=> data_get($this->mokaOptions, 'company_code'),
+                'Username'  => data_get($this->mokaOptions, 'api_username'),
+                'Password'  => data_get($this->mokaOptions, 'api_password'),
+                'CheckKey'  => $mokaKey,
+            ],
+            'DealerSaleRequest' => 
+            [
+                'ProductName' => data_get($params, 'ProductName'),
+                'ProductCode' => data_get($params, 'ProductCode') 
+            ]
+        ]; 
+
+        $response = self::doRequest('/DealerSale/AddProduct',$postParams);
+
+        if(data_get($response, 'response.code') && data_get($response, 'response.code') == 200)
+        {
+            $responseBody = data_get($response, 'body');
+            $responseBody = json_decode($responseBody, true);
+            $responseBody = data_get($responseBody, 'Data'); 
+            return $responseBody;
+        }
+        
+        return $response; 
+    }
+
+    /**
+     * Get Product List
+     *
+     * @return void
+     */
+    private function getProductList()
+    {
+        global $mokaKey;
+
+        $postParams = [
+            'DealerSaleAuthentication' => 
+            [
+                'DealerCode'=> data_get($this->mokaOptions, 'company_code'),
+                'Username'  => data_get($this->mokaOptions, 'api_username'),
+                'Password'  => data_get($this->mokaOptions, 'api_password'),
+                'CheckKey'  => $mokaKey,
+            ]
+        ]; 
+
+        $response = self::doRequest('/DealerSale/GetProductList',$postParams);
+
+        if(data_get($response, 'response.code') && data_get($response, 'response.code') == 200)
+        {
+            $responseBody = data_get($response, 'body');
+            $responseBody = json_decode($responseBody, true);
+            $responseBody = self::formatProductList(data_get($responseBody, 'Data.ProductList')); 
+            return $responseBody;
+        }
+        
+        return $response; 
+    }
+
+    /**
+     * Format Product List
+     */
+    private function formatProductList($products)
+    {
+        $output = [];
+
+        if(!$products)
+        {
+            $output = [];
+        }
+
+        foreach($products as $perProduct)
+        {
+            $output[data_get($perProduct, 'DealerProductId')] = $perProduct;
+        }
+
+        return $output;
+    }
+
+    /**
+     * Save Product Data After Moka Created Product
+     *
+     * @param [type] $params
+     * @return void
+     */
+    private function saveProductToDatabase($params)
+    {
+        global $wpdb;
+        $tableName = $wpdb->prefix . 'moka_products';
+        $productId = data_get($params, 'product_id');
+
+        $checkIfExists = $wpdb->get_row("SELECT id FROM $tableName WHERE product_id = '$productId'");
+ 
+        if ($checkIfExists == NULL) {
+            return $wpdb->insert($tableName, $params);
+        } else {
+            $wpdb->delete( $tableName, ['id' => data_get($checkIfExists, 'id')] );
+            return $wpdb->insert($tableName, $params);
+        }
+
+    }
 }

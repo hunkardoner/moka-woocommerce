@@ -44,6 +44,7 @@ function mokaPaySqlTables()
 
 	$tableName = $wpdb->prefix . 'moka_transactions';
 	$tableNameHash = $wpdb->prefix . 'moka_transactions_hash';
+	$tableNameProduct = $wpdb->prefix . 'moka_products';
 	
 	$charsetCollate = $wpdb->get_charset_collate();
 
@@ -72,9 +73,18 @@ function mokaPaySqlTables()
 		PRIMARY KEY (`id`)
 	) $charsetCollate;";
 
+	$sqlProduct = "CREATE TABLE $tableNameProduct (
+		`id` int unsigned NOT NULL AUTO_INCREMENT,
+		`product_id` text,
+		`moka_product_id` int DEFAULT NULL, 
+		`created_at` timestamp NULL DEFAULT NULL,
+		PRIMARY KEY (`id`)
+	) $charsetCollate;";
+
 	require( ABSPATH . 'wp-admin/includes/upgrade.php' );
 	dbDelta( $sql );
 	dbDelta( $sqlHash );
+	dbDelta( $sqlProduct );
 
 	add_option( 'moka_transactions', $mokaVersion );
 }

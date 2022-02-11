@@ -20,7 +20,7 @@ class Optimisthub_Ajax
     /**
      * Bin number validation requestvia ajax.
      *
-     * @return void
+     * @return void$
      */
     public function validate_bin($params)
     {

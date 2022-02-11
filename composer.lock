@@ -1,9 +1,14 @@
 {
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "bb7b2ba82d18ab0e159fd2560b719406",
     "packages": [
         {
             "name": "rappasoft/laravel-helpers",
             "version": "v2.0.0",
-            "version_normalized": "2.0.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rappasoft/laravel-helpers.git",
@@ -18,9 +23,7 @@
             "require": {
                 "php": "^7.3|^8.0"
             },
-            "time": "2021-10-01T18:00:53+00:00",
             "type": "library",
-            "installation-source": "dist",
             "autoload": {
                 "files": [
                     "src/arrays.php",
@@ -50,12 +53,11 @@
                 "issues": "https://github.com/rappasoft/laravel-helpers/issues",
                 "source": "https://github.com/rappasoft/laravel-helpers/tree/v2.0.0"
             },
-            "install-path": "../rappasoft/laravel-helpers"
+            "time": "2021-10-01T18:00:53+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
             "version": "v1.24.0",
-            "version_normalized": "1.24.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
@@ -76,7 +78,6 @@
             "suggest": {
                 "ext-mbstring": "For best performance"
             },
-            "time": "2021-11-30T18:21:41+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -87,7 +88,6 @@
                     "url": "https://github.com/symfony/polyfill"
                 }
             },
-            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "Symfony\\Polyfill\\Mbstring\\": ""
@@ -136,12 +136,11 @@
                     "type": "tidelift"
                 }
             ],
-            "install-path": "../symfony/polyfill-mbstring"
+            "time": "2021-11-30T18:21:41+00:00"
         },
         {
             "name": "symfony/polyfill-php80",
             "version": "v1.24.0",
-            "version_normalized": "1.24.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php80.git",
@@ -156,7 +155,6 @@
             "require": {
                 "php": ">=7.1"
             },
-            "time": "2021-09-13T13:58:33+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -167,7 +165,6 @@
                     "url": "https://github.com/symfony/polyfill"
                 }
             },
-            "installation-source": "dist",
             "autoload": {
                 "files": [
                     "bootstrap.php"
@@ -222,12 +219,11 @@
                     "type": "tidelift"
                 }
             ],
-            "install-path": "../symfony/polyfill-php80"
+            "time": "2021-09-13T13:58:33+00:00"
         },
         {
             "name": "symfony/var-dumper",
             "version": "v5.4.3",
-            "version_normalized": "5.4.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
@@ -260,12 +256,10 @@
                 "ext-intl": "To show region name in time zone dump",
                 "symfony/console": "To use the ServerDumpCommand and/or the bin/var-dump-server script"
             },
-            "time": "2022-01-17T16:30:37+00:00",
             "bin": [
                 "Resources/bin/var-dump-server"
             ],
             "type": "library",
-            "installation-source": "dist",
             "autoload": {
                 "files": [
                     "Resources/functions/dump.php"
@@ -314,12 +308,11 @@
                     "type": "tidelift"
                 }
             ],
-            "install-path": "../symfony/var-dumper"
+            "time": "2022-01-17T16:30:37+00:00"
         },
         {
             "name": "tightenco/collect",
             "version": "v8.83.0",
-            "version_normalized": "8.83.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tighten/collect.git",
@@ -340,9 +333,7 @@
                 "nesbot/carbon": "^2.23.0",
                 "phpunit/phpunit": "^8.3"
             },
-            "time": "2022-02-10T23:00:41+00:00",
             "type": "library",
-            "installation-source": "dist",
             "autoload": {
                 "files": [
                     "src/Collect/Support/helpers.php",
@@ -371,9 +362,18 @@
                 "issues": "https://github.com/tighten/collect/issues",
                 "source": "https://github.com/tighten/collect/tree/v8.83.0"
             },
-            "install-path": "../tightenco/collect"
+            "time": "2022-02-10T23:00:41+00:00"
         }
     ],
-    "dev": true,
-    "dev-package-names": []
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=7.1"
+    },
+    "platform-dev": [],
+    "plugin-api-version": "2.0.0"
 }

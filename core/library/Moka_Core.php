@@ -187,6 +187,18 @@ class MokaPayment
         }
 
         $return.= '</tr></thead>';
+
+        /**
+         * Display Admin Auth error notice.
+         */
+        if(data_get($storedData,'status'))
+        { 
+            echo '<div class="notice notice-error is-dismissible">
+                <p>'.data_get($storedData,'message').'</p>
+            </div>';
+            return;
+        }
+ 
  
         foreach($storedData as $perStoredInstallmentKey => $perStoredInstallment)
         {
@@ -351,6 +363,15 @@ class MokaPayment
     public function formatInstallmentResponse($response)
     {
         $output = [];
+
+        if(!$response)
+        {
+            $output =  [
+                'status' => 'error',
+                'message' => 'Api erişim bilgilerinizde hatalarınız var. Taksit seçeneklerinizin sağlıklı çalışması için lütfen geçerli erişim bilgilerinizi yazınız.',
+            ];
+            return $output;
+        }
 
         foreach ($response as $perItemKey => $perItem)
         {

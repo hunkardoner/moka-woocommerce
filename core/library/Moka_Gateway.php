@@ -25,7 +25,21 @@ function initOptimisthubGatewayClass()
             $this->has_fields = true; 
             $this->method_title = 'Moka by Isbank';
             $this->method_description = __('Moka by Isbank WooCommerce Gateway','moka-woocommerce');
-            $this->supports = ['products'];
+            
+            // supports
+            $this->supports = [
+                'subscriptions',
+                'products',
+                'subscription_cancellation',
+                'subscription_reactivation',
+                'subscription_suspension',
+                'subscription_amount_changes',
+                'subscription_payment_method_change',
+                'subscription_date_changes',
+                'default_credit_card_form',
+                'refunds',
+                'pre-orders'                
+            ];
     
             $this->init_form_fields();  
             $this->init_settings();
@@ -498,6 +512,12 @@ function initOptimisthubGatewayClass()
             
         public function webhook() 
         {
+        }
+
+        public function process_refund($order_id, $amount = null, $reason = '')
+        {
+            #dd($order_id,$amount,$reason);
+            return true;
         }
 
         /**

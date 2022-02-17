@@ -209,7 +209,34 @@ function initOptimisthubGatewayClass()
          */
         public function payment_form_fields($cc_fields , $payment_id)
         {
+      
+            global $woocommerce;
+            $referer = is_wc_endpoint_url( 'order-pay' ) ? 'order-pay' : 'checkout'; 
+            $total = data_get($woocommerce, 'cart.total'); 
+
+            if ( get_query_var('order-pay') ) {
+                $order = wc_get_order(get_query_var('order-pay'));
+                $total = $order->get_total();  
+            } 
+
             $cc_fields = [
+                'current-step-of-payment' => '
+                    <p class="form-row form-row-wide">
+                        <input 
+                            id="'.$payment_id.'-current-step-of-payment" 
+                            class="current-step-of-payment" 
+                            type="hidden"  
+                            value="'.$referer.'"
+                            name="' .$payment_id. '-current-step-of-payment" 
+                        />
+                        <input 
+                            id="'.$payment_id.'-current-order-total" 
+                            class="current-order-total" 
+                            type="hidden"  
+                            value="'.$total.'"
+                            name="' .$payment_id. '-current-order-total" 
+                        />
+                    </p>',
                 'name-on-card' => '
                     <p class="form-row form-row-wide">
                         <label for="'. $payment_id.'-card-holder">' . __('Name On Card','moka-woocommerce') . ' <span class="required">*</span></label>
@@ -419,8 +446,7 @@ function initOptimisthubGatewayClass()
                 'result_message'=> self::mokaPosErrorMessages($callbackResult),
                 'result'        => 1, // 1 False 0 True
                 'created_at'    => date('Y-m-d H:i:s'), 
-            ];
-            
+            ]; 
 
             ## Display Error on Checkout
             if($callbackResult != 'Success')
@@ -580,14 +606,15 @@ function initOptimisthubGatewayClass()
             
             $selectedInstallment    = data_get($postData, $this->id.'-installment');
             $currentComission       = data_get($rates, $selectedInstallment.'.value'); 
-         
+            $getAmount = $order->get_total();
+
             $orderData = [
                 'CardHolderFullName'    => (string) data_get($postData, $this->id.'-name-oncard'),
                 'CardNumber'            => (string) self::formatCartNumber(data_get($postData, $this->id.'-card-number')),
                 'ExpMonth'              => (string) data_get($expriyDate,'month' ),
                 'ExpYear'               => (string) self::formatExpiryDate(data_get($expriyDate,'year' )),
                 'CvcNumber'             => (string) data_get($postData, $this->id.'-card-cvc'),
-                'Amount'                => (string) self::calculateComissionRate(data_get($postData, $this->id.'-order-total'),$currentComission),
+                'Amount'                => (string) self::calculateComissionRate($getAmount,$currentComission),
                 'Currency'              => (string) $order->get_currency() == 'TRY' ? 'TL' : $order->get_currency() ,
                 'InstallmentNumber'     => (int) $selectedInstallment,
                 'ClientIP'              => (string) self::getUserIp(),
@@ -678,7 +705,7 @@ function initOptimisthubGatewayClass()
          * @return void
          */
         private function calculateComissionRate( $total, $percent )
-        {
+        { 
             $total = ( ( ($total*$percent)/100) + $total); 
             return number_format($total,2,'.', '');
         }
@@ -690,7 +717,7 @@ function initOptimisthubGatewayClass()
          * @return void
          */
         private function fetchOrder($orderId)
-        {
+        { 
             return wc_get_order( $orderId );
         }
         

@@ -82,7 +82,7 @@ Moka Pos, Moka Pay plugin;
 #### Version 2.9.1
 - Issue : Amount Issues Fixed.
 
-#### Version 2.9
+ #### Version 2.9
 - Security : `$wpdb` security and performence issues.
 - Feature : Added `DfxWooRoleChanger` Plugin Support.
 - Information : Added, composer.json tag details.

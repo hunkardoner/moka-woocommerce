@@ -540,11 +540,44 @@ function initOptimisthubGatewayClass()
         {
         }
 
-        public function process_refund($order_id, $amount = null, $reason = '')
+        public function process_refund($orderId, $amount = null, $reason = '')
         {
+
+            $postData = $_REQUEST;
+
+            $refundReason = data_get($postData, 'refund_reason');
+
+            if(!$orderId)
+            {
+                return false;
+            }
+
+            $order = wc_get_order($orderId);
+            $maxRefundAmount = wc_format_decimal($order->get_total() - $order->get_total_refunded());
+        
+            if (!$maxRefundAmount) {
+                return;
+            } 
+
+            dd($_REQUEST);
+
+if($result == null){
+// Create the refund object
+$refund = wc_create_refund(array('amount' => $max_refund, 'reason' => __('Order Fully Refunded', 'woocommerce'), 'order_id' => $order_id, 'line_items' => array()));
+wc_delete_shop_order_transients($order_id);
+
+} 
+
+            global $request;
+            $request = [];
+            dd($request,$_REQUEST);
+            /*
+            $orderId = 72;
+            $amount = 2000;
+            $reason = 'test';*/
             #dd($order_id,$amount,$reason);
             return true;
-        }
+        } 
 
         /**
          * Check isOption Has on Db.

@@ -496,7 +496,7 @@ function initOptimisthubGatewayClass()
                 $woocommerce->cart->empty_cart();
 
                 ### Set Completed 
-                $order->update_status('completed', __('Payment Completed', 'moka-woocommerce'). ' Moka Payment Id : '.data_get($orderDetails,'OtherTrxCode'));
+                $order->update_status('processing', __('Payment Completed', 'moka-woocommerce'). ' Moka Payment Id : '.data_get($orderDetails,'OtherTrxCode'));
                 ### Set Completed 
                 
                 $recordParams['amount_paid'] = data_get($orderDetails,'Amount');
